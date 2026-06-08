@@ -1,0 +1,268 @@
+// تخزين مؤقت للغرف
+const rooms = new Map();
+
+// قاموس ضخم من الكلمات (أزواج: كلمة عادية للجميع، كلمة الجاسوس)
+const wordPairs = [
+    { civilian: "تفاح", spy: "برتقال" },
+    { civilian: "مطار", spy: "محطة قطار" },
+    { civilian: "طبيب", spy: "ممرض" },
+    { civilian: "مدرسة", spy: "جامعة" },
+    { civilian: "سيارة", spy: "دراجة" },
+    { civilian: "قهوة", spy: "شاي" },
+    { civilian: "قطة", spy: "كلب" },
+    { civilian: "بحر", spy: "محيط" },
+    { civilian: "جبل", spy: "تلة" },
+    { civilian: "كتاب", spy: "مجلة" },
+    { civilian: "مطعم", spy: "كافيتيريا" },
+    { civilian: "حديقة", spy: "غابة" },
+    { civilian: "هاتف", spy: "حاسوب" },
+    { civilian: "نظارات", spy: "عدسات لاصقة" },
+    { civilian: "كرة قدم", spy: "كرة سلة" },
+    { civilian: "سمك", spy: "روبيان" },
+    { civilian: "دجاج", spy: "لحم" },
+    { civilian: "خبز", spy: "كعكة" },
+    { civilian: "لبن", spy: "زبادي" },
+    { civilian: "فندق", spy: "نزل" },
+    { civilian: "شاطئ", spy: "نهر" },
+    { civilian: "نجم", spy: "قمر" },
+    { civilian: "زهرة", spy: "شجرة" },
+    { civilian: "فراشة", spy: "نحلة" },
+    { civilian: "ذهب", spy: "فضة" },
+    { civilian: "فضاء", spy: "سماء" },
+    { civilian: "طائرة", spy: "هليكوبتر" },
+    { civilian: "قطار", spy: "باص" },
+    { civilian: "سفينة", spy: "قارب" },
+    { civilian: "جيش", spy: "شرطة" },
+    { civilian: "مستشفى", spy: "عيادة" },
+    { civilian: "صيدلية", spy: "متجر" },
+    { civilian: "مسجد", spy: "كنيسة" },
+    { civilian: "زفاف", spy: "عقيقة" },
+    { civilian: "عيد", spy: "مناسبة" },
+    { civilian: "صيف", spy: "شتاء" },
+    { civilian: "ربيع", spy: "خريف" },
+    { civilian: "ثلج", spy: "مطر" },
+    { civilian: "ريح", spy: "عاصفة" },
+    { civilian: "نار", spy: "لهب" },
+    { civilian: "ماء", spy: "عصير" },
+    { civilian: "عسل", spy: "سكر" },
+    { civilian: "ملح", spy: "فلفل" },
+    { civilian: "سكين", spy: "مقص" },
+    { civilian: "ملعقة", spy: "شوكة" },
+    { civilian: "كرسي", spy: "طاولة" },
+    { civilian: "سرير", spy: "أريكة" },
+    { civilian: "مرآة", spy: "نافذة" },
+    { civilian: "باب", spy: "شباك" },
+    { civilian: "حذاء", spy: "جورب" },
+    { civilian: "قبعة", spy: "طاقية" },
+    { civilian: "ساعة", spy: "منبه" },
+    { civilian: "كاميرا", spy: "فيديو" },
+    { civilian: "راديو", spy: "تلفاز" },
+    { civilian: "إنترنت", spy: "واي فاي" },
+    { civilian: "بريد", spy: "رسالة" },
+    { civilian: "ورق", spy: "قلم" },
+    { civilian: "ممحاة", spy: "مسطرة" },
+    { civilian: "حقيبة", spy: "شنطة" },
+    { civilian: "محفظة", spy: "نقود" },
+    { civilian: "بطاقة", spy: "هوية" },
+    { civilian: "مفتاح", spy: "قفل" },
+    { civilian: "درج", spy: "خزانة" },
+    { civilian: "ثلاجة", spy: "مجمد" },
+    { civilian: "فرن", spy: "مايكروويف" },
+    { civilian: "غسالة", spy: "نشافة" },
+    { civilian: "مكنسة", spy: "ممسحة" },
+    { civilian: "صابون", spy: "شامبو" },
+    { civilian: "معجون أسنان", spy: "فرشاة أسنان" },
+    { civilian: "موسيقى", spy: "غناء" },
+    { civilian: "رسم", spy: "تلوين" },
+    { civilian: "رقص", spy: "باليه" },
+    { civilian: "تمثيل", spy: "سينما" },
+    { civilian: "مسرحية", spy: "أوبرا" },
+    { civilian: "مهرجان", spy: "حفل" },
+    { civilian: "سوق", spy: "بازار" },
+    { civilian: "متجر", spy: "سوبرماركت" },
+    { civilian: "بنك", spy: "صراف" },
+    { civilian: "مكتب", spy: "شركة" },
+    { civilian: "مصنع", spy: "ورشة" },
+    { civilian: "مزرعة", spy: "حقل" },
+    { civilian: "غابة", spy: "أدغال" },
+    { civilian: "صحراء", spy: "واحة" },
+    { civilian: "جزيرة", spy: "شبه جزيرة" },
+    { civilian: "كهف", spy: "نفق" },
+    { civilian: "جسر", spy: "سد" },
+    { civilian: "برج", spy: "ناطحة سحاب" },
+    { civilian: "قصر", spy: "فيلا" },
+    { civilian: "كوخ", spy: "خيمة" },
+    { civilian: "فيلا", spy: "قصر" },
+    { civilian: "حديقة حيوان", spy: "أكواريوم" },
+    { civilian: "متحف", spy: "معرض" },
+    { civilian: "مكتبة", spy: "دار نشر" },
+    { civilian: "ملعب", spy: "صالة رياضية" },
+    { civilian: "حمام سباحة", spy: "بحر" },
+    { civilian: "نادي", spy: "بار" }
+];
+// نضيف المزيد من الكلمات لتوسيع القاموس (يمكن إضافة المئات بسهولة)
+const extra = [
+    { civilian: "قمر", spy: "كوكب" }, { civilian: "شمس", spy: "نجم" }, { civilian: "مطرقة", spy: "منشار" },
+    { civilian: "مفك", spy: "براغي" }, { civilian: "حاسوب", spy: "آلة حاسبة" }, { civilian: "طابعة", spy: "ماسح ضوئي" },
+    { civilian: "هاتف ذكي", spy: "جهاز لوحي" }, { civilian: "ساعة يد", spy: "ساعة حائط" }
+];
+wordPairs.push(...extra);
+// يمكن إضافة المزيد حسب الرغبة، لكن 100+ كافٍ لتجربة ممتعة.
+
+function getRandomWordPair() {
+    const idx = Math.floor(Math.random() * wordPairs.length);
+    return wordPairs[idx];
+}
+
+function newRoomState(roomCode, hostId, hostName, maxPlayers) {
+    return {
+        roomCode,
+        host: hostId,
+        players: [{ id: hostId, name: hostName, isSpy: null, word: null, votedFor: null, ready: false }],
+        maxPlayers: maxPlayers || 4,
+        gameStarted: false,
+        gameActive: false,
+        roundEnded: false,
+        spyWinner: false,
+        civilianWord: null,
+        spyWord: null,
+        chat: [],
+        votes: {},
+        votedPlayers: [], // من صوت بالفعل
+        createdAt: Date.now()
+    };
+}
+
+function assignWords(state) {
+    const pair = getRandomWordPair();
+    state.civilianWord = pair.civilian;
+    state.spyWord = pair.spy;
+    // اختيار جاسوس عشوائي
+    const spyIndex = Math.floor(Math.random() * state.players.length);
+    state.players.forEach((p, idx) => {
+        if (idx === spyIndex) {
+            p.isSpy = true;
+            p.word = state.spyWord;
+        } else {
+            p.isSpy = false;
+            p.word = state.civilianWord;
+        }
+    });
+}
+
+function checkGameEnd(state) {
+    if (!state.gameActive) return;
+    const totalPlayers = state.players.length;
+    const votesCount = state.votedPlayers.length;
+    if (votesCount === totalPlayers) {
+        // انتهى التصويت
+        let maxVotes = 0;
+        let votedOut = null;
+        for (let [pid, count] of Object.entries(state.votes)) {
+            if (count > maxVotes) {
+                maxVotes = count;
+                votedOut = pid;
+            }
+        }
+        const eliminated = state.players.find(p => p.id === votedOut);
+        if (eliminated && eliminated.isSpy) {
+            state.spyWinner = false;
+            state.roundEnded = true;
+            state.gameActive = false;
+            state.chat.push({ sender: 'نظام', text: `🕵️ تم طرد الجاسوس (${eliminated.name})! المواطنون فازوا!`, system: true });
+        } else {
+            state.spyWinner = true;
+            state.roundEnded = true;
+            state.gameActive = false;
+            state.chat.push({ sender: 'نظام', text: `💀 تم طرد مواطن! الجاسوس فاز!`, system: true });
+        }
+    }
+}
+
+export default async function handler(req, res) {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
+    const { action, roomCode, playerName, playerId, maxPlayers, message, targetId } = req.body;
+
+    try {
+        switch (action) {
+            case 'create': {
+                if (rooms.has(roomCode)) return res.json({ success: false, error: 'الغرفة موجودة' });
+                const newPlayerId = Math.random().toString(36).substring(2, 10);
+                const state = newRoomState(roomCode, newPlayerId, playerName, maxPlayers);
+                rooms.set(roomCode, state);
+                return res.json({ success: true, playerId: newPlayerId });
+            }
+            case 'join': {
+                const state = rooms.get(roomCode);
+                if (!state) return res.json({ success: false, error: 'الغرفة غير موجودة' });
+                if (state.gameStarted) return res.json({ success: false, error: 'بدأت اللعبة بالفعل، لا يمكن الانضمام' });
+                if (state.players.length >= state.maxPlayers) return res.json({ success: false, error: 'الغرفة ممتلئة' });
+                const newPlayerId = Math.random().toString(36).substring(2, 10);
+                state.players.push({ id: newPlayerId, name: playerName, isSpy: null, word: null, votedFor: null, ready: false });
+                state.chat.push({ sender: 'نظام', text: `👋 انضم ${playerName} إلى الغرفة`, system: true });
+                return res.json({ success: true, playerId: newPlayerId });
+            }
+            case 'start': {
+                const state = rooms.get(roomCode);
+                if (!state) return res.json({ success: false, error: 'الغرفة غير موجودة' });
+                if (state.gameStarted) return res.json({ success: false, error: 'اللعبة بدأت بالفعل' });
+                if (state.players.length < 2) return res.json({ success: false, error: 'يحتاج على الأقل 2 لاعبين' });
+                state.gameStarted = true;
+                state.gameActive = true;
+                state.roundEnded = false;
+                state.votes = {};
+                state.votedPlayers = [];
+                assignWords(state);
+                state.chat.push({ sender: 'نظام', text: '🎮 بدأت اللعبة! ابدأوا بالتحقيق واكتشاف الجاسوس. كلمتك السرية ظهرت في الأسفل.', system: true });
+                return res.json({ success: true });
+            }
+            case 'getState': {
+                const state = rooms.get(roomCode);
+                if (!state) return res.json({ success: false, error: 'الغرفة غير موجودة' });
+                const player = state.players.find(p => p.id === playerId);
+                if (!player) return res.json({ success: false, error: 'لاعب غير موجود' });
+                const safeState = {
+                    players: state.players.map(p => ({ id: p.id, name: p.name })),
+                    host: state.host,
+                    gameStarted: state.gameStarted,
+                    gameActive: state.gameActive,
+                    roundEnded: state.roundEnded,
+                    spyWinner: state.spyWinner,
+                    maxPlayers: state.maxPlayers,
+                    chat: state.chat,
+                    votes: state.votes,
+                    votedPlayers: state.votedPlayers,
+                    playerWord: state.gameActive ? player.word : null
+                };
+                return res.json({ success: true, state: safeState });
+            }
+            case 'chat': {
+                const state = rooms.get(roomCode);
+                if (!state) return res.json({ success: false, error: 'الغرفة غير موجودة' });
+                const player = state.players.find(p => p.id === playerId);
+                if (!player) return res.json({ success: false, error: 'لاعب غير موجود' });
+                state.chat.push({ sender: player.name, text: message, system: false });
+                return res.json({ success: true });
+            }
+            case 'vote': {
+                const state = rooms.get(roomCode);
+                if (!state) return res.json({ success: false, error: 'الغرفة غير موجودة' });
+                if (!state.gameActive || state.roundEnded) return res.json({ success: false, error: 'لا يمكن التصويت الآن' });
+                if (state.votedPlayers.includes(playerId)) return res.json({ success: false, error: 'لقد صوت مسبقاً' });
+                const target = state.players.find(p => p.id === targetId);
+                if (!target) return res.json({ success: false, error: 'اللاعب المستهدف غير موجود' });
+                state.votes[targetId] = (state.votes[targetId] || 0) + 1;
+                state.votedPlayers.push(playerId);
+                state.chat.push({ sender: 'نظام', text: `${state.players.find(p => p.id === playerId).name} صوت ضد ${target.name}`, system: true });
+                checkGameEnd(state);
+                return res.json({ success: true });
+            }
+            default:
+                return res.status(400).json({ error: 'إجراء غير معروف' });
+        }
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ error: 'خطأ في الخادم' });
+    }
+}
