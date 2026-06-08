@@ -1,151 +1,64 @@
 // تخزين مؤقت للغرف
 const rooms = new Map();
 
-// قاموس ضخم من الكلمات (أزواج: كلمة عادية للجميع، كلمة الجاسوس)
-const wordPairs = [
-    { civilian: "تفاح", spy: "برتقال" },
-    { civilian: "مطار", spy: "محطة قطار" },
-    { civilian: "طبيب", spy: "ممرض" },
-    { civilian: "مدرسة", spy: "جامعة" },
-    { civilian: "سيارة", spy: "دراجة" },
-    { civilian: "قهوة", spy: "شاي" },
-    { civilian: "قطة", spy: "كلب" },
-    { civilian: "بحر", spy: "محيط" },
-    { civilian: "جبل", spy: "تلة" },
-    { civilian: "كتاب", spy: "مجلة" },
-    { civilian: "مطعم", spy: "كافيتيريا" },
-    { civilian: "حديقة", spy: "غابة" },
-    { civilian: "هاتف", spy: "حاسوب" },
-    { civilian: "نظارات", spy: "عدسات لاصقة" },
-    { civilian: "كرة قدم", spy: "كرة سلة" },
-    { civilian: "سمك", spy: "روبيان" },
-    { civilian: "دجاج", spy: "لحم" },
-    { civilian: "خبز", spy: "كعكة" },
-    { civilian: "لبن", spy: "زبادي" },
-    { civilian: "فندق", spy: "نزل" },
-    { civilian: "شاطئ", spy: "نهر" },
-    { civilian: "نجم", spy: "قمر" },
-    { civilian: "زهرة", spy: "شجرة" },
-    { civilian: "فراشة", spy: "نحلة" },
-    { civilian: "ذهب", spy: "فضة" },
-    { civilian: "فضاء", spy: "سماء" },
-    { civilian: "طائرة", spy: "هليكوبتر" },
-    { civilian: "قطار", spy: "باص" },
-    { civilian: "سفينة", spy: "قارب" },
-    { civilian: "جيش", spy: "شرطة" },
-    { civilian: "مستشفى", spy: "عيادة" },
-    { civilian: "صيدلية", spy: "متجر" },
-    { civilian: "مسجد", spy: "كنيسة" },
-    { civilian: "زفاف", spy: "عقيقة" },
-    { civilian: "عيد", spy: "مناسبة" },
-    { civilian: "صيف", spy: "شتاء" },
-    { civilian: "ربيع", spy: "خريف" },
-    { civilian: "ثلج", spy: "مطر" },
-    { civilian: "ريح", spy: "عاصفة" },
-    { civilian: "نار", spy: "لهب" },
-    { civilian: "ماء", spy: "عصير" },
-    { civilian: "عسل", spy: "سكر" },
-    { civilian: "ملح", spy: "فلفل" },
-    { civilian: "سكين", spy: "مقص" },
-    { civilian: "ملعقة", spy: "شوكة" },
-    { civilian: "كرسي", spy: "طاولة" },
-    { civilian: "سرير", spy: "أريكة" },
-    { civilian: "مرآة", spy: "نافذة" },
-    { civilian: "باب", spy: "شباك" },
-    { civilian: "حذاء", spy: "جورب" },
-    { civilian: "قبعة", spy: "طاقية" },
-    { civilian: "ساعة", spy: "منبه" },
-    { civilian: "كاميرا", spy: "فيديو" },
-    { civilian: "راديو", spy: "تلفاز" },
-    { civilian: "إنترنت", spy: "واي فاي" },
-    { civilian: "بريد", spy: "رسالة" },
-    { civilian: "ورق", spy: "قلم" },
-    { civilian: "ممحاة", spy: "مسطرة" },
-    { civilian: "حقيبة", spy: "شنطة" },
-    { civilian: "محفظة", spy: "نقود" },
-    { civilian: "بطاقة", spy: "هوية" },
-    { civilian: "مفتاح", spy: "قفل" },
-    { civilian: "درج", spy: "خزانة" },
-    { civilian: "ثلاجة", spy: "مجمد" },
-    { civilian: "فرن", spy: "مايكروويف" },
-    { civilian: "غسالة", spy: "نشافة" },
-    { civilian: "مكنسة", spy: "ممسحة" },
-    { civilian: "صابون", spy: "شامبو" },
-    { civilian: "معجون أسنان", spy: "فرشاة أسنان" },
-    { civilian: "موسيقى", spy: "غناء" },
-    { civilian: "رسم", spy: "تلوين" },
-    { civilian: "رقص", spy: "باليه" },
-    { civilian: "تمثيل", spy: "سينما" },
-    { civilian: "مسرحية", spy: "أوبرا" },
-    { civilian: "مهرجان", spy: "حفل" },
-    { civilian: "سوق", spy: "بازار" },
-    { civilian: "متجر", spy: "سوبرماركت" },
-    { civilian: "بنك", spy: "صراف" },
-    { civilian: "مكتب", spy: "شركة" },
-    { civilian: "مصنع", spy: "ورشة" },
-    { civilian: "مزرعة", spy: "حقل" },
-    { civilian: "غابة", spy: "أدغال" },
-    { civilian: "صحراء", spy: "واحة" },
-    { civilian: "جزيرة", spy: "شبه جزيرة" },
-    { civilian: "كهف", spy: "نفق" },
-    { civilian: "جسر", spy: "سد" },
-    { civilian: "برج", spy: "ناطحة سحاب" },
-    { civilian: "قصر", spy: "فيلا" },
-    { civilian: "كوخ", spy: "خيمة" },
-    { civilian: "فيلا", spy: "قصر" },
-    { civilian: "حديقة حيوان", spy: "أكواريوم" },
-    { civilian: "متحف", spy: "معرض" },
-    { civilian: "مكتبة", spy: "دار نشر" },
-    { civilian: "ملعب", spy: "صالة رياضية" },
-    { civilian: "حمام سباحة", spy: "بحر" },
-    { civilian: "نادي", spy: "بار" }
+// قاموس ضخم من الكلمات (فقط الكلمة العادية للمواطنين)
+const civilianWords = [
+    "تفاح", "برتقال", "مطار", "محطة قطار", "طبيب", "ممرض", "مدرسة", "جامعة",
+    "سيارة", "دراجة", "قهوة", "شاي", "قطة", "كلب", "بحر", "محيط", "جبل", "تلة",
+    "كتاب", "مجلة", "مطعم", "كافيتيريا", "حديقة", "غابة", "هاتف", "حاسوب",
+    "نظارات", "عدسات لاصقة", "كرة قدم", "كرة سلة", "سمك", "روبيان", "دجاج", "لحم",
+    "خبز", "كعكة", "لبن", "زبادي", "فندق", "نزل", "شاطئ", "نهر", "نجم", "قمر",
+    "زهرة", "شجرة", "فراشة", "نحلة", "ذهب", "فضة", "فضاء", "سماء", "طائرة", "هليكوبتر",
+    "قطار", "باص", "سفينة", "قارب", "جيش", "شرطة", "مستشفى", "عيادة", "صيدلية", "متجر",
+    "مسجد", "كنيسة", "زفاف", "عقيقة", "عيد", "مناسبة", "صيف", "شتاء", "ربيع", "خريف",
+    "ثلج", "مطر", "ريح", "عاصفة", "نار", "لهب", "ماء", "عصير", "عسل", "سكر", "ملح", "فلفل",
+    "سكين", "مقص", "ملعقة", "شوكة", "كرسي", "طاولة", "سرير", "أريكة", "مرآة", "نافذة",
+    "باب", "شباك", "حذاء", "جورب", "قبعة", "طاقية", "ساعة", "منبه", "كاميرا", "فيديو",
+    "راديو", "تلفاز", "إنترنت", "واي فاي", "بريد", "رسالة", "ورق", "قلم", "ممحاة", "مسطرة",
+    "حقيبة", "شنطة", "محفظة", "نقود", "بطاقة", "هوية", "مفتاح", "قفل", "درج", "خزانة",
+    "ثلاجة", "مجمد", "فرن", "مايكروويف", "غسالة", "نشافة", "مكنسة", "ممسحة", "صابون", "شامبو",
+    "معجون أسنان", "فرشاة أسنان", "موسيقى", "غناء", "رسم", "تلوين", "رقص", "باليه", "تمثيل",
+    "سينما", "مسرحية", "أوبرا", "مهرجان", "حفل", "سوق", "بازار", "بنك", "صراف", "مكتب", "شركة",
+    "مصنع", "ورشة", "مزرعة", "حقل", "صحراء", "واحة", "جزيرة", "شبه جزيرة", "كهف", "نفق",
+    "جسر", "سد", "برج", "ناطحة سحاب", "قصر", "فيلا", "كوخ", "خيمة", "حديقة حيوان", "أكواريوم",
+    "متحف", "معرض", "مكتبة", "دار نشر", "ملعب", "صالة رياضية", "حمام سباحة", "نادي", "بار"
 ];
-// نضيف المزيد من الكلمات لتوسيع القاموس (يمكن إضافة المئات بسهولة)
-const extra = [
-    { civilian: "قمر", spy: "كوكب" }, { civilian: "شمس", spy: "نجم" }, { civilian: "مطرقة", spy: "منشار" },
-    { civilian: "مفك", spy: "براغي" }, { civilian: "حاسوب", spy: "آلة حاسبة" }, { civilian: "طابعة", spy: "ماسح ضوئي" },
-    { civilian: "هاتف ذكي", spy: "جهاز لوحي" }, { civilian: "ساعة يد", spy: "ساعة حائط" }
-];
-wordPairs.push(...extra);
-// يمكن إضافة المزيد حسب الرغبة، لكن 100+ كافٍ لتجربة ممتعة.
 
-function getRandomWordPair() {
-    const idx = Math.floor(Math.random() * wordPairs.length);
-    return wordPairs[idx];
+function getRandomCivilianWord() {
+    const idx = Math.floor(Math.random() * civilianWords.length);
+    return civilianWords[idx];
 }
 
 function newRoomState(roomCode, hostId, hostName, maxPlayers) {
     return {
         roomCode,
         host: hostId,
-        players: [{ id: hostId, name: hostName, isSpy: null, word: null, votedFor: null, ready: false }],
+        players: [{ id: hostId, name: hostName, isSpy: false, word: null, votedFor: null }],
         maxPlayers: maxPlayers || 4,
         gameStarted: false,
         gameActive: false,
         roundEnded: false,
         spyWinner: false,
         civilianWord: null,
-        spyWord: null,
         chat: [],
         votes: {},
-        votedPlayers: [], // من صوت بالفعل
+        votedPlayers: [],
         createdAt: Date.now()
     };
 }
 
-function assignWords(state) {
-    const pair = getRandomWordPair();
-    state.civilianWord = pair.civilian;
-    state.spyWord = pair.spy;
+function assignRoles(state) {
+    const word = getRandomCivilianWord();
+    state.civilianWord = word;
     // اختيار جاسوس عشوائي
     const spyIndex = Math.floor(Math.random() * state.players.length);
     state.players.forEach((p, idx) => {
         if (idx === spyIndex) {
             p.isSpy = true;
-            p.word = state.spyWord;
+            p.word = "🔍 أنت الجاسوس! حاول معرفة الكلمة من خلال النقاش";
         } else {
             p.isSpy = false;
-            p.word = state.civilianWord;
+            p.word = word;
         }
     });
 }
@@ -155,7 +68,7 @@ function checkGameEnd(state) {
     const totalPlayers = state.players.length;
     const votesCount = state.votedPlayers.length;
     if (votesCount === totalPlayers) {
-        // انتهى التصويت
+        // احتساب الأصوات
         let maxVotes = 0;
         let votedOut = null;
         for (let [pid, count] of Object.entries(state.votes)) {
@@ -199,7 +112,7 @@ export default async function handler(req, res) {
                 if (state.gameStarted) return res.json({ success: false, error: 'بدأت اللعبة بالفعل، لا يمكن الانضمام' });
                 if (state.players.length >= state.maxPlayers) return res.json({ success: false, error: 'الغرفة ممتلئة' });
                 const newPlayerId = Math.random().toString(36).substring(2, 10);
-                state.players.push({ id: newPlayerId, name: playerName, isSpy: null, word: null, votedFor: null, ready: false });
+                state.players.push({ id: newPlayerId, name: playerName, isSpy: false, word: null, votedFor: null });
                 state.chat.push({ sender: 'نظام', text: `👋 انضم ${playerName} إلى الغرفة`, system: true });
                 return res.json({ success: true, playerId: newPlayerId });
             }
@@ -213,8 +126,8 @@ export default async function handler(req, res) {
                 state.roundEnded = false;
                 state.votes = {};
                 state.votedPlayers = [];
-                assignWords(state);
-                state.chat.push({ sender: 'نظام', text: '🎮 بدأت اللعبة! ابدأوا بالتحقيق واكتشاف الجاسوس. كلمتك السرية ظهرت في الأسفل.', system: true });
+                assignRoles(state);
+                state.chat.push({ sender: 'نظام', text: '🎮 بدأت اللعبة! المواطنون لديهم نفس الكلمة، الجاسوس يحاول معرفتها.', system: true });
                 return res.json({ success: true });
             }
             case 'getState': {
@@ -265,4 +178,4 @@ export default async function handler(req, res) {
         console.error(err);
         return res.status(500).json({ error: 'خطأ في الخادم' });
     }
-}
+    }
