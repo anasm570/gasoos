@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>🕵️ لعبة الجاسوس – أونلاين</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Cairo', Tahoma, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(145deg, #0f172a, #1e293b);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .game-container {
+            max-width: 1200px;
+            width: 100%;
+            background: rgba(0,0,0,0.65);
+            backdrop-filter: blur(12px);
+            border-radius: 56px;
+            padding: 20px;
+            border: 1px solid #ffcc88;
+        }
+
+        h1 {
+            text-align: center;
+            color: #ffdd99;
+            margin-bottom: 20px;
+        }
+
+        .room-panel {
+            background: #1e293b;
+            border-radius: 48px;
+            padding: 15px;
+            margin-bottom: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .room-panel input, .room-panel button {
+            padding: 10px 15px;
+            border-radius: 40px;
+            border: none;
+        }
+
+        .room-panel input {
+            background: #0f172a;
+            color: white;
+            width: 150px;
+        }
+
+        .room-panel button {
+            background: #2c6e4b;
+            color: white;
+            cursor: pointer;
+        }
+
+        .room-info {
+            background: #00000066;
+            border-radius: 40px;
+            padding: 8px;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .main-panel {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .players-area {
+            flex: 1;
+            background: #1e293b;
+            border-radius: 48px;
+            padding: 15px;
+        }
+
+        .players-area h3 {
+            color: #facc15;
+            margin-bottom: 15px;
+        }
+
+        .player-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .player-item {
+            background: #0f172a;
+            padding: 8px 12px;
+            border-radius: 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .player-name {
+            font-weight: bold;
+        }
+
+        .host-badge {
+            background: #f97316;
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+        }
+
+        .chat-area {
+            flex: 2;
+            background: #1e293b;
+            border-radius: 48px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            min-height: 400px;
+        }
+
+        .chat-messages {
+            flex: 1;
+            background: #0f172a;
+            border-radius: 32px;
+            padding: 12px;
+            overflow-y: auto;
+            max-height: 350px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .chat-message {
+            background: #1e293b;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+        }
+
+        .chat-message.system {
+            color: #88ffaa;
+            font-style: italic;
+        }
+
+        .chat-message.spy {
+            color: #ff8888;
+        }
+
+        .chat-input {
+            display: flex;
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        .chat-input input {
+            flex: 1;
+            padding: 10px;
+            border-radius: 40px;
+            border: none;
+            background: #0f172a;
+            color: white;
+        }
+
+        .chat-input button {
+            background: #f97316;
+            padding: 10px 20px;
+            border-radius: 40px;
+            border: none;
+            color: white;
+            cursor: pointer;
+        }
+
+        .word-area {
+            margin-top: 15px;
+            background: #00000066;
+            border-radius: 40px;
+            padding: 12px;
+            text-align: center;
+        }
+
+        .word-card {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #88ffaa;
+            text-shadow: 0 0 5px #88ffaa;
+        }
+
+        .vote-area {
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .vote-btn {
+            background: #dc2626;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 40px;
+            color: white;
+            cursor: pointer;
+        }
+
+        .start-btn {
+            background: #10b981;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 40px;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .start-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .settings {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .settings label {
+            color: #ffdd99;
+        }
+
+        .settings input {
+            width: 70px;
+            padding: 5px;
+            border-radius: 20px;
+            border: none;
+            text-align: center;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 20px;
+            color: #88aacc;
+            font-size: 0.7rem;
+        }
+    </style>
+</head>
+<body>
+<div class="game-container">
+    <h1>🕵️ لعبة الجاسوس</h1>
+
+    <div class="room-panel">
+        <input type="text" id="playerName" placeholder="اسمك">
+        <input type="text" id="roomCode" placeholder="رمز الغرفة">
+        <button id="createBtn">🆕 إنشاء غرفة</button>
+        <button id="joinBtn">🔗 انضم للغرفة</button>
+    </div>
+
+    <div id="roomInfo" class="room-info"></div>
+
+    <div class="settings" id="settingsPanel" style="display: none;">
+        <label>عدد اللاعبين:</label>
+        <input type="number" id="maxPlayers" min="2" max="8" value="4">
+        <button id="startGameBtn" class="start-btn">🚀 بدء اللعبة</button>
+    </div>
+
+    <div class="main-panel">
+        <div class="players-area">
+            <h3>👥 اللاعبون</h3>
+            <div id="playerList" class="player-list"></div>
+        </div>
+        <div class="chat-area">
+            <div id="chatMessages" class="chat-messages"></div>
+            <div class="chat-input">
+                <input type="text" id="chatInput" placeholder="اكتب رسالة...">
+                <button id="sendChatBtn">إرسال</button>
+            </div>
+            <div id="wordArea" class="word-area" style="display: none;">
+                <div>🔍 كلمتك السرية:</div>
+                <div id="secretWord" class="word-card">???</div>
+            </div>
+            <div id="voteArea" class="vote-area" style="display: none;">
+                <button id="voteBtn" class="vote-btn">🗳️ تصويت لطرد مشبوه</button>
+            </div>
+        </div>
+    </div>
+    <footer>🎮 قواعد اللعبة: كل اللاعبين ما عدا واحد (الجاسوس) يحصلون على نفس الكلمة. الجاسوس يحصل على كلمة مختلفة. مهمة اللاعبين اكتشاف الجاسوس ومن ثم التصويت لطرده. الجاسوس يحاول التمويه وكشف الكلمة.</footer>
+</div>
+
+<script>
+    const API_URL = '/api/game';
+    let roomId = null;
+    let playerId = null;
+    let playerName = '';
+    let isHost = false;
+    let pollInterval = null;
+    let currentGameState = null;
+
+    // عناصر DOM
+    const playerNameInput = document.getElementById('playerName');
+    const roomCodeInput = document.getElementById('roomCode');
+    const createBtn = document.getElementById('createBtn');
+    const joinBtn = document.getElementById('joinBtn');
+    const roomInfoDiv = document.getElementById('roomInfo');
+    const settingsPanel = document.getElementById('settingsPanel');
+    const maxPlayersInput = document.getElementById('maxPlayers');
+    const startGameBtn = document.getElementById('startGameBtn');
+    const playerListDiv = document.getElementById('playerList');
+    const chatMessagesDiv = document.getElementById('chatMessages');
+    const chatInput = document.getElementById('chatInput');
+    const sendChatBtn = document.getElementById('sendChatBtn');
+    const wordArea = document.getElementById('wordArea');
+    const secretWordSpan = document.getElementById('secretWord');
+    const voteArea = document.getElementById('voteArea');
+    const voteBtn = document.getElementById('voteBtn');
+
+    async function callApi(action, data = {}) {
+        try {
+            const res = await fetch(API_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action, roomId, playerId, ...data })
+            });
+            return await res.json();
+        } catch (err) {
+            console.error(err);
+            return { success: false, error: err.message };
+        }
+    }
+
+    async function createRoom() {
+        const name = playerNameInput.value.trim();
+        if (!name) { alert('أدخل اسمك'); return; }
+        const code = roomCodeInput.value.trim();
+        if (!code) { alert('أدخل رمز الغرفة'); return; }
+        const maxPlayers = parseInt(maxPlayersInput.value);
+        const res = await callApi('create', { roomCode: code, playerName: name, maxPlayers });
+        if (res.success) {
+            roomId = code;
+            playerId = res.playerId;
+            playerName = name;
+            isHost = true;
+            roomInfoDiv.innerHTML = `✅ الغرفة ${roomId} (أنت المضيف)`;
+            settingsPanel.style.display = 'flex';
+            startPolling();
+        } else {
+            alert(res.error);
+        }
+    }
+
+    async function joinRoom() {
+        const name = playerNameInput.value.trim();
+        if (!name) { alert('أدخل اسمك'); return; }
+        const code = roomCodeInput.value.trim();
+        if (!code) { alert('أدخل رمز الغرفة'); return; }
+        const res = await callApi('join', { roomCode: code, playerName: name });
+        if (res.success) {
+            roomId = code;
+            playerId = res.playerId;
+            playerName = name;
+            isHost = false;
+            roomInfoDiv.innerHTML = `✅ انضممت للغرفة ${roomId}`;
+            settingsPanel.style.display = 'none';
+            startPolling();
+        } else {
+            alert(res.error);
+        }
+    }
+
+    async function startGame() {
+        const maxPlayers = parseInt(maxPlayersInput.value);
+        const res = await callApi('start', { maxPlayers });
+        if (!res.success) alert(res.error);
+    }
+
+    async function sendMessage() {
+        const text = chatInput.value.trim();
+        if (!text) return;
+        chatInput.value = '';
+        await callApi('chat', { message: text });
+    }
+
+    async function vote() {
+        // فتح نافذة اختيار لاعب للتصويت
+        if (!currentGameState || !currentGameState.gameActive) return;
+        const players = currentGameState.players;
+        const options = players.filter(p => p.id !== playerId).map(p => `${p.name}`).join('\n');
+        const targetName = prompt(`اختر لاعباً للتصويت عليه:\n${options}`);
+        if (!targetName) return;
+        const target = players.find(p => p.name === targetName);
+        if (!target) { alert('اسم غير موجود'); return; }
+        await callApi('vote', { targetId: target.id });
+    }
+
+    function updateUI(state) {
+        currentGameState = state;
+        if (!state) return;
+        // تحديث قائمة اللاعبين
+        playerListDiv.innerHTML = '';
+        state.players.forEach(p => {
+            const div = document.createElement('div');
+            div.className = 'player-item';
+            div.innerHTML = `
+                <span class="player-name">${p.name}</span>
+                ${p.id === state.host ? '<span class="host-badge">مضيف</span>' : ''}
+                ${state.gameActive && state.votes && state.votes[p.id] ? '<span style="color:#ff8888;">🗳️</span>' : ''}
+            `;
+            playerListDiv.appendChild(div);
+        });
+        // الكلمة السرية (تظهر فقط للمستخدم نفسه إذا كانت اللعبة نشطة)
+        if (state.gameActive && state.playerWord) {
+            wordArea.style.display = 'block';
+            secretWordSpan.innerText = state.playerWord;
+        } else {
+            wordArea.style.display = 'none';
+        }
+        // منطقة التصويت
+        if (state.gameActive && !state.roundEnded && !state.votedPlayers?.includes(playerId)) {
+            voteArea.style.display = 'flex';
+        } else {
+            voteArea.style.display = 'none';
+        }
+        // زر البدء للمضيف فقط إذا لم تبدأ اللعبة
+        if (isHost && !state.gameStarted) {
+            startGameBtn.disabled = false;
+        } else {
+            startGameBtn.disabled = true;
+        }
+        // رسالة الفائز
+        if (state.roundEnded) {
+            let msg = state.spyWinner ? '🕵️ الجاسوس فاز!' : '🎉 المواطنون فازوا!';
+            roomInfoDiv.innerHTML = `🏆 انتهت اللعبة: ${msg} | ${state.spyWinner ? 'الجاسوس' : 'المواطنون'} انتصروا. اضغط "بدء اللعبة" من جديد.`;
+        } else if (state.gameActive) {
+            roomInfoDiv.innerHTML = `🎮 اللعبة جارية...`;
+        } else {
+            roomInfoDiv.innerHTML = `🕹️ انتظر بدء اللعبة... (${state.players.length}/${state.maxPlayers} لاعب)`;
+        }
+        // المحادثة
+        if (state.chat && state.chat.length) {
+            chatMessagesDiv.innerHTML = '';
+            state.chat.forEach(msg => {
+                const msgDiv = document.createElement('div');
+                msgDiv.className = 'chat-message';
+                if (msg.system) msgDiv.classList.add('system');
+                if (msg.spy) msgDiv.classList.add('spy');
+                msgDiv.innerHTML = `<strong>${msg.sender}:</strong> ${msg.text}`;
+                chatMessagesDiv.appendChild(msgDiv);
+            });
+            chatMessagesDiv.scrollTop = chatMessagesDiv.scrollHeight;
+        }
+    }
+
+    async function pollState() {
+        if (!roomId || !playerId) return;
+        const res = await callApi('getState');
+        if (res.success && res.state) {
+            updateUI(res.state);
+        } else if (res.error) {
+            console.log(res.error);
+        }
+    }
+
+    function startPolling() {
+        if (pollInterval) clearInterval(pollInterval);
+        pollInterval = setInterval(pollState, 800);
+    }
+
+    createBtn.onclick = createRoom;
+    joinBtn.onclick = joinRoom;
+    startGameBtn.onclick = startGame;
+    sendChatBtn.onclick = sendMessage;
+    voteBtn.onclick = vote;
+    chatInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendMessage(); });
+</script>
+</body>
+</html>
